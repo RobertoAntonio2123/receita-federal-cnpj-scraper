@@ -1,14 +1,11 @@
 import requests
 
-# URL da página de download
-url = "https://portaldatransparencia.gov.br/download-de-dados/favorecidos-pj"
-
-# Fazendo a requisição para a página
-response = requests.get(url)
-
-# Verificando se a requisição foi bem-sucedida
-if response.status_code == 200:
-    print("Requisição bem-sucedida! Conteúdo da página:")
-    print(response.text)  # Exibindo o conteúdo da página HTML
-else:
-    print(f"Falha na requisição. Código de status: {response.status_code}")
+def baixar_arquivo_zip(url):
+    """Baixa o arquivo ZIP da URL e retorna o conteúdo."""
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        print("Download bem-sucedido!")
+        return response.content
+    else:
+        print(f"Falha no download. Código de status: {response.status_code}")
+        return None
