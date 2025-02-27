@@ -1,22 +1,22 @@
+### src/main.py
+#from utils.date_handler import get_last_month
+from src.utils.date_handler import get_last_month
 from src.services.downloader import baixar_arquivo_zip
-from src.services.extractor import extrair_arquivo_zip
-from src.services.cleaner import limpar_dados
-from src.services.saver import mover_arquivo
-from src.config import URL_DOWNLOAD, DATA_RAW_DIR, DATA_CLEANED_DIR, ARQUIVO_RAW, ARQUIVO_LIMPO
+from src.services.extractor import extract_zip_file
+from src.services.cleaner import clean_data
+import os
+from src.config import DATA_RAW_DIR, DATA_CLEANED_DIR
 
 def main():
-    print("Iniciando processo de extração e limpeza de dados...")
-
-    # Baixar o arquivo ZIP
-    conteudo_zip = baixar_arquivo_zip(URL_DOWNLOAD)
-    if conteudo_zip:
-        extrair_arquivo_zip(conteudo_zip, DATA_RAW_DIR)
-
-        # Limpar os dados
-        limpar_dados(ARQUIVO_RAW, ARQUIVO_LIMPO)
-
-        # Mover arquivo limpo para pasta cleaned
-        mover_arquivo(ARQUIVO_LIMPO, f"{DATA_CLEANED_DIR}/{ARQUIVO_LIMPO}")
+    last_month = get_last_month()
+    url = f"https://portaldatransparencia.gov.br/download-de-dados/favorecidos-pj/{last_month}"
+    zip_path = os.path.join(DATA_RAW_DIR, f"dados_{last_month}.zip")
+    extracted_folder = os.path.join(DATA_RAW_DIR, f"dados_{last_month}")
+    
+    baixar_arquivo_zip(url, zip_path)
+    extract_zip_file(zip_path, extracted_folder)
+    clean_data(extracted_folder, DATA_CLEANED_DIR)
 
 if __name__ == "__main__":
     main()
+
